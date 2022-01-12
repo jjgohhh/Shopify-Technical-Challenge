@@ -1,0 +1,40 @@
+Shopify Technical Challenge Question 2
+
+a. How many orders were shipped by Speedy Express in total?
+
+SELECT COUNT(*) 
+FROM Orders 
+LEFT JOIN Shippers 
+ON Orders.ShipperID = Shippers.ShipperID
+WHERE ShipperName == "Speedy Express";
+
+Ans: 54
+
+b. What is the last name of the employee with the most orders?
+
+SELECT LastName, MAX(x.orders)
+FROM
+(SELECT COUNT(Orders.EmployeeID) AS orders, Employees.FirstName, Employees.LastName
+FROM Orders
+LEFT JOIN Employees 
+ON Orders.EmployeeID = Employees.EmployeeID
+GROUP BY Orders.EmployeeID);
+
+Ans: Peacock
+
+c. What product was ordered the most by customers in Germany? 
+
+SELECT Products.ProductName, Customers.Country, SUM(OrderDetails.Quantity) AS Quantity
+FROM Products 
+LEFT JOIN OrderDetails 
+ON Products.ProductID = OrderDetails.ProductID
+LEFT JOIN Orders
+ON OrderDetails.OrderID = Orders.OrderID
+LEFT JOIN Customers 
+ON Orders.CustomerID = Customers.CustomerID
+WHERE Customers.Country == "Germany"
+GROUP BY Products.ProductName 
+ORDER BY Quantity DESC
+LIMIT 1;
+
+Ans: Boston crab meat with a quantity of 160 was ordered the most by customers in Germany
